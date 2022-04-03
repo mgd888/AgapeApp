@@ -11,8 +11,7 @@ import {
 	ScrollView,
 } from 'react-native';
 import { Card, ListItem, Icon, Button } from 'react-native-elements';
-
-import CardLayout from '../components/CardLayout';
+import { db } from '../firebase/config';
 
 const DECK_DATA = [
 	{
@@ -69,35 +68,70 @@ const DECK_DATA = [
 	},
 ];
 
-
-
 const HomeScreen = ({ navigation, route }) => {
+	const [decks, setDecks] = useState([]);
+
 	useEffect(() => {
-		console.log(route.params?.deckTitle);
+		if (route.params?.deckTitle) {
+			console.log(route.params?.deckTitle);
+		}
+	}, [route.params?.deckTitle]);
+
+	useEffect(async () => {
+
+		const deckList = []
+
+		db.collection('decks')
+			.get()
+			.then((querySnapshot) => {
+				querySnapshot.forEach((doc) => {
+					// console.log(`${doc.id} => `, doc.data());
+					deckList.push(doc.data())
+					// decks.push(JSON.stringify(doc.data()));
+					// decks.push(doc.data());
+					// setDecks([...decks, doc.data()])
+				});
+				setDecks(deckList)
+			});
+
+		console.log('decks\n', decks);
 	}, [route.params?.deckTitle]);
 
 	return (
 		<ScrollView>
-			{/* <FlatList
-				data={DECK_DATA}
-				renderItem={renderItem}
-				keyExtractor={(item) => item.id}
-			/> */}
-			{DECK_DATA.map((deck, idx) => {
-				return (
-					<Card key={idx}>
-						<Card.Title h3>{deck.title}</Card.Title>
-						<Button
-							title='Select Deck'
-							onPress={() =>
-								navigation.navigate('Card', {
-									title: deck.title,
-								})
-							}
-						></Button>
-					</Card>
-				);
-			})}
+			{decks &&
+				Object.keys(decks).map((d, i) => {
+					return (
+						<Card key={decks[d]._id}>
+							<Card.Title h3>{decks[d].title}</Card.Title>
+							<Button
+								title='Select Deck'
+								onPress={() =>
+									navigation.navigate('Card', {
+										title: decks[d].title,
+										id: decks[d]._id,
+									})
+								}
+							></Button>
+						</Card>
+					);
+				})}
+			{/* {DECK_DATA &&
+				DECK_DATA.map((deck, idx) => {
+					return (
+						<Card key={idx}>
+							<Card.Title h3>{deck.title}</Card.Title>
+							<Button
+								title='Select Deck'
+								onPress={() =>
+									navigation.navigate('Card', {
+										title: deck.title,
+									})
+								}
+							></Button>
+						</Card>
+					);
+				})} */}
 			<Card>
 				<Card.Title h3>Custom Deck</Card.Title>
 				<Button

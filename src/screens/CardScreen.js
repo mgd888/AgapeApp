@@ -1,45 +1,71 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
+import React, { useEffect, useState, useCallback } from 'react';
+import { View, Text, Button, StyleSheet, RefreshControl } from 'react-native';
 import CardSwiper from 'react-native-card-swipe';
 import { Card } from 'react-native-elements';
+import { db } from '../firebase/config';
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/firestore';
+
+const wait = (timeout) => {
+	return new Promise((resolve) => setTimeout(resolve, timeout));
+};
 
 const CardScreen = ({ navigation, route }) => {
-	const [questions, setQuestions] = useState([
-		{
-			id: '1',
-			question: 'What makes a good travel companion?',
-			deck_id: 'deck_1',
-		},
-		{
-			id: '2',
-			question:
-				'Have you been to another country? What did you appreciate about the culture there?',
-			deck_id: 'deck_1',
-		},
-		{
-			id: '3',
-			question:
-				'When you travel, do you prefer to do touristy activities or go off the beaten path?',
-			deck_id: 'deck_1',
-		},
-	]);
-	useEffect(() => {}, []);
+	const [deck_ID, setDeck_ID] = useState('');
+	const [questions, setQuestions] = useState([]);
+	const [refreshing, setRefreshing] = useState(false);
+
+	const onRefresh = useCallback(() => {
+		setRefreshing(true);
+		wait(2000).then(() => setRefreshing(false));
+	}, []);
+
+	useEffect(() => {
+		if (route.params?.id !== '') {
+			setDeck_ID(route.params?.id);
+		} else {
+			console.log('empty');
+		}
+	}, [route.params?.id]);
+
+	useEffect(() => {
+		const cardList = [];
+
+		if (deck_ID !== '') {
+			console.log('deck id', route.params?.id);
+			db.collection('questions')
+				.where('deck_id', '==', deck_ID)
+				.get()
+				.then((querySnapshot) => {
+					querySnapshot.forEach((doc) => {
+						// doc.data() is never undefined for query doc snapshots
+						// console.log(doc.id, ' => ', doc.data());
+						cardList.push(doc.data());
+					});
+					setQuestions(cardList);
+				});
+		} else {
+			console.log('No deck id');
+		}
+	}, [deck_ID]);
 
 	const renderCard = (item) => {
 		return (
 			<View>
-				<Card key={item.id}>
+				<Card key={item._id}>
+					<Card.Title h3>{route.params?.title}</Card.Title>
 					<Text
 						style={{
-							marginBottom: 10,
-							height: 150,
+							marginBottom: 40,
+							height: 'auto',
 							width: '100%',
 							fontSize: 30,
 							justifyContent: 'center',
 							alignItems: 'center',
+							padding: 20
 						}}
 					>
-						{item.question}
+						{item.title}
 					</Text>
 				</Card>
 			</View>
@@ -49,10 +75,10 @@ const CardScreen = ({ navigation, route }) => {
 	const renderNoMoreCards = () => {
 		return (
 			<Card title='All done'>
-				<Text
+				<Card.Title
 					style={{
 						marginBottom: 10,
-						height: 150,
+						height: 120,
 						width: '100%',
 						fontSize: 30,
 						justifyContent: 'center',
@@ -60,7 +86,7 @@ const CardScreen = ({ navigation, route }) => {
 					}}
 				>
 					There is no more content
-				</Text>
+				</Card.Title>
 				<Button
 					title='Get More'
 					onPress={() => navigation.navigate('Deck')}
@@ -71,11 +97,30 @@ const CardScreen = ({ navigation, route }) => {
 
 	return (
 		<View style={styles.container}>
+			<View>
+				<Button
+					title='Add a Card'
+					onPress={() =>
+						navigation.navigate('Create a Card', {
+							deckID: route.params?.id,
+							title: route.params?.title,
+						})
+					}
+				/>
+				<Button title='Refresh Deck' onPress={() => onRefresh} />
+			</View>
 			{/* <Text>Card from {route.params?.title} deck </Text> */}
 			<CardSwiper
 				data={questions}
 				renderCard={renderCard}
-				onSwipeLeft={(item) => console.log(item, 'onSwipeLeft')}
+				onSwipeLeft={(item) => {
+					console.log(item, 'onSwipeLeft');
+					navigation.navigate('Edit a Card', {
+						cardID: item._id,
+						deckID: route.params?.id,
+						title: route.params?.title,
+					});
+				}}
 				onSwipeRight={(item) => console.log(item, 'onSwipeRight')}
 				renderNoMoreCards={renderNoMoreCards}
 			/>
@@ -90,6 +135,6 @@ const styles = StyleSheet.create({
 		flex: 1,
 		display: 'flex',
 		backgroundColor: '#fff',
-		paddingTop: 160,
+		paddingTop: 110,
 	},
 });
