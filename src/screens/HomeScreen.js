@@ -9,64 +9,11 @@ import {
 	StatusBar,
 	Pressable,
 	ScrollView,
+	Image,
 } from 'react-native';
 import { Card, ListItem, Icon, Button } from 'react-native-elements';
 import { db } from '../firebase/config';
 
-const DECK_DATA = [
-	{
-		id: '1',
-		title: 'Travel',
-	},
-	{
-		id: '2',
-		title: 'Childhood Memories',
-	},
-	{
-		id: '3',
-		title: 'Interesting Experiences',
-	},
-	{
-		id: '4',
-		title: 'Everday Life',
-	},
-	{
-		id: '5',
-		title: 'Family Relationships',
-	},
-	{
-		id: '6',
-		title: 'Friendships',
-	},
-	{
-		id: '7',
-		title: 'Personality',
-	},
-	{
-		id: '8',
-		title: 'College & Career',
-	},
-	{
-		id: '9',
-		title: 'Philosophy',
-	},
-	{
-		id: '10',
-		title: 'Community Involvement',
-	},
-	{
-		id: '11',
-		title: 'Theology & Doctrine',
-	},
-	{
-		id: '12',
-		title: 'Personal Faith',
-	},
-	{
-		id: '13',
-		title: 'Local Church',
-	},
-];
 
 const HomeScreen = ({ navigation, route }) => {
 	const [decks, setDecks] = useState([]);
@@ -78,20 +25,15 @@ const HomeScreen = ({ navigation, route }) => {
 	}, [route.params?.deckTitle]);
 
 	useEffect(async () => {
-
-		const deckList = []
+		const deckList = [];
 
 		db.collection('decks')
 			.get()
 			.then((querySnapshot) => {
 				querySnapshot.forEach((doc) => {
-					// console.log(`${doc.id} => `, doc.data());
-					deckList.push(doc.data())
-					// decks.push(JSON.stringify(doc.data()));
-					// decks.push(doc.data());
-					// setDecks([...decks, doc.data()])
+					deckList.push(doc.data());
 				});
-				setDecks(deckList)
+				setDecks(deckList);
 			});
 
 		console.log('decks\n', decks);
@@ -100,11 +42,17 @@ const HomeScreen = ({ navigation, route }) => {
 	return (
 		<ScrollView>
 			{decks &&
-				Object.keys(decks).map((d, i) => {
+				Object.keys(decks).map((d) => {
 					return (
-						<Card key={decks[d]._id}>
+						<Card key={decks[d]._id} >
 							<Card.Title h3>{decks[d].title}</Card.Title>
+							<Card.Image
+								source={{
+									uri: `https://source.unsplash.com/random/200x100/?${decks[d].title}`,
+								}}
+							/>
 							<Button
+								buttonStyle={{ backgroundColor: '#26ACE2', marginTop:20 }}
 								title='Select Deck'
 								onPress={() =>
 									navigation.navigate('Card', {
@@ -112,31 +60,18 @@ const HomeScreen = ({ navigation, route }) => {
 										id: decks[d]._id,
 									})
 								}
-							></Button>
+							>
+								<Text>Select Deck</Text>
+							</Button>
 						</Card>
 					);
 				})}
-			{/* {DECK_DATA &&
-				DECK_DATA.map((deck, idx) => {
-					return (
-						<Card key={idx}>
-							<Card.Title h3>{deck.title}</Card.Title>
-							<Button
-								title='Select Deck'
-								onPress={() =>
-									navigation.navigate('Card', {
-										title: deck.title,
-									})
-								}
-							></Button>
-						</Card>
-					);
-				})} */}
 			<Card>
 				<Card.Title h3>Custom Deck</Card.Title>
 				<Button
 					title='Create a Deck'
 					onPress={() => navigation.navigate('Create a Deck')}
+					buttonStyle={{ backgroundColor: '#26ACE2' }}
 				></Button>
 			</Card>
 		</ScrollView>

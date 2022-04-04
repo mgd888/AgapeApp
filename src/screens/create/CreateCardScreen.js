@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
+import { View, Text, Button, StyleSheet, Alert } from 'react-native';
 import TagInput from 'react-native-tags-input';
 import { Input } from 'react-native-elements';
-import { TabRouter } from '@react-navigation/native';
 import { db } from '../../firebase/config';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/firestore';
@@ -19,7 +18,7 @@ const CreateCardScreen = ({ navigation, route }) => {
 	};
 
 	useEffect(() => {
-		console.log('creating card for deck', route.params?.deckID);
+		// console.log('creating card for deck', route.params?.deckID);
 	}, [route.params?.deckID]);
 
 	return (
@@ -29,7 +28,6 @@ const CreateCardScreen = ({ navigation, route }) => {
 					fontSize: 18,
 					marginBottom: 10,
 					marginLeft: 12,
-					color: 'lightgrey',
 				}}
 				placeholder='What is the question?'
 				value={cTitle}
@@ -45,38 +43,45 @@ const CreateCardScreen = ({ navigation, route }) => {
 			<Button
 				title='Create Question Card'
 				onPress={() => {
-					// Generates id
-					const id = db.collection('questions').doc().id;
+					if (cTitle !== '') {
+						// Generates id
+						const id = db.collection('questions').doc().id;
 
-					//After generating id add the contents from the field to firestore
-					db.collection('questions')
-						.doc(id)
-						.set({
-							_id: id,
-							title: cTitle,
-							favorite: false,
-							tags: tags,
-							deck_id: route.params?.deckID,
-						})
-						.then(function () {
-							console.log('Card successfully added!');
-						})
-						.catch(function (error) {
-							console.error('Error adding card: ', error);
+						//After generating id add the contents from the field to firestore
+						db.collection('questions')
+							.doc(id)
+							.set({
+								_id: id,
+								title: cTitle,
+								favorite: false,
+								tags: tags,
+								deck_id: route.params?.deckID,
+							})
+							.then(function () {
+								console.log('Card successfully added!');
+							})
+							.catch(function (error) {
+								console.error('Error adding card: ', error);
+							});
+
+						// add card id to deck's questions array
+						db.collection('decks')
+							.doc(route.params?.deckID)
+							.update({
+								questions:
+									firebase.firestore.FieldValue.arrayUnion(
+										id
+									),
+							});
+
+						navigation.navigate('Card', {
+							id: route.params?.deckID,
+							title: route.params?.title,
 						});
-
-					// add card id to deck's questions array
-					db.collection('decks')
-						.doc(route.params?.deckID)
-						.update({
-							questions:
-								firebase.firestore.FieldValue.arrayUnion(id),
-						});
-
-					navigation.navigate('Card', {
-						id: route.params?.deckID,
-						title: route.params?.title,
-					});
+					}
+					else{
+						Alert.alert("Missing Field")
+					}
 				}}
 			></Button>
 		</View>

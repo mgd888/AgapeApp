@@ -1,4 +1,5 @@
 import React from 'react';
+import { Button } from 'react-native-elements';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from '../screens/HomeScreen';
 import CardScreen from '../screens/CardScreen';
@@ -6,7 +7,8 @@ import CardsScreen from '../screens/CardsScreen';
 import FavoriteScreen from '../screens/FavoriteScreen';
 import CreateDeckScreen from '../screens/create/CreateDeckScreen';
 import CreateCardScreen from '../screens/create/CreateCardScreen';
-import EditCardScreen from '../screens/edit/EditCardScreen'
+import EditCardScreen from '../screens/edit/EditCardScreen';
+import Reloader from '../components/Reloader';
 const Stack = createNativeStackNavigator();
 
 const screenOptionStyle = {
@@ -20,7 +22,13 @@ const screenOptionStyle = {
 const MainStackNav = () => {
 	return (
 		<Stack.Navigator screenOptions={screenOptionStyle}>
-			<Stack.Screen name='Deck' component={HomeScreen} />
+			<Stack.Screen
+				name='Deck'
+				component={HomeScreen}
+				options={{
+					headerRight: () => <Reloader />,
+				}}
+			/>
 			<Stack.Screen name='Card' component={CardScreen} />
 			<Stack.Screen name='Create a Deck' component={CreateDeckScreen} />
 			<Stack.Screen name='Create a Card' component={CreateCardScreen} />

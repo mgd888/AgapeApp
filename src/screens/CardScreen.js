@@ -5,20 +5,12 @@ import { Card } from 'react-native-elements';
 import { db } from '../firebase/config';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/firestore';
-
-const wait = (timeout) => {
-	return new Promise((resolve) => setTimeout(resolve, timeout));
-};
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const CardScreen = ({ navigation, route }) => {
 	const [deck_ID, setDeck_ID] = useState('');
 	const [questions, setQuestions] = useState([]);
-	const [refreshing, setRefreshing] = useState(false);
-
-	const onRefresh = useCallback(() => {
-		setRefreshing(true);
-		wait(2000).then(() => setRefreshing(false));
-	}, []);
+	const [favorite, setFavorite] = useState(false);
 
 	useEffect(() => {
 		if (route.params?.id !== '') {
@@ -49,26 +41,62 @@ const CardScreen = ({ navigation, route }) => {
 		}
 	}, [deck_ID]);
 
-	const renderCard = (item) => {
+	const renderCard = (item,idx) => {
 		return (
-			<View>
-				<Card key={item._id}>
-					<Card.Title h3>{route.params?.title}</Card.Title>
-					<Text
-						style={{
-							marginBottom: 40,
-							height: 'auto',
-							width: '100%',
-							fontSize: 30,
-							justifyContent: 'center',
-							alignItems: 'center',
-							padding: 20
-						}}
-					>
-						{item.title}
-					</Text>
-				</Card>
-			</View>
+			item && (
+				<View key={idx}>
+					<Card key={item._id}>
+						<Card.Title h3>{route.params?.title}</Card.Title>
+						<Text
+							style={{
+								marginBottom: 40,
+								height: 'auto',
+								width: '100%',
+								fontSize: 30,
+								justifyContent: 'center',
+								alignItems: 'center',
+								padding: 20,
+							}}
+						>
+							{item.title}
+						</Text>
+						<Text>{item.tags.tag && item.tags.tag} </Text>
+						{item.tags.tagsArray &&
+							item.tags.tagsArray.map((t, idx) => {
+								return <Text key={idx}># {t}</Text>;
+							})}
+						{item.favorite ? (
+							<Icon
+								name='heart'
+								size={40}
+								style={{ textAlign: 'right' }}
+								onPress={() => {
+									db.collection('questions')
+										.doc(item._id)
+										.update({
+											favorite: false,
+										})
+										.then(()=>navigation.navigate('Deck'))
+								}}
+							/>
+						) : (
+							<Icon
+								name='heart-o'
+								size={40}
+								style={{ textAlign: 'right' }}
+								onPress={() => {
+									db.collection('questions')
+										.doc(item._id)
+										.update({
+											favorite: true,
+										})
+										.then(()=>navigation.navigate('Deck'))
+								}}
+							/>
+						)}
+					</Card>
+				</View>
+			)
 		);
 	};
 
@@ -107,7 +135,6 @@ const CardScreen = ({ navigation, route }) => {
 						})
 					}
 				/>
-				<Button title='Refresh Deck' onPress={() => onRefresh} />
 			</View>
 			{/* <Text>Card from {route.params?.title} deck </Text> */}
 			<CardSwiper

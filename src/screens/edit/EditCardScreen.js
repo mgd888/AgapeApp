@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
+import { View, Text, Button, StyleSheet, Alert } from 'react-native';
 import TagInput from 'react-native-tags-input';
 import { Input } from 'react-native-elements';
 import { TabRouter } from '@react-navigation/native';
@@ -19,6 +19,75 @@ const EditCardScreen = ({ navigation, route }) => {
 		setTags(value);
 	};
 
+	const showAlert = () =>
+		Alert.alert(
+			'Delete Card',
+			'Are you sure you want to delete the selected card? This action cannot be undone.',
+			[
+				{
+					text: 'Delete',
+					onPress: () => {
+						// delete from questions collection in firestore
+						cardID &&
+							db
+								.collection('questions')
+								.doc(cardID)
+								.delete()
+								.then(() => {
+									console.log(
+										'Document successfully deleted!'
+									);
+								})
+								.catch((error) => {
+									console.error(
+										'Error removing document: ',
+										error
+									);
+								});
+
+						cardID &&
+							db
+								.collection('decks')
+								.doc(route.params?.deckID)
+								.update({
+									questions:
+										firebase.firestore.FieldValue.arrayRemove(
+											cardID
+										),
+								})
+								.then(() => {
+									console.log(
+										'Document successfully removed cardID!'
+									);
+									return true;
+								})
+								.catch((error) => {
+									console.log(error);
+									return false;
+								});
+
+						Alert.alert('Successfully deleted card.')
+						// navigate to card screen after
+						navigation.navigate('Card', {
+							id: route.params?.deckID,
+							title: route.params?.title,
+						});
+					},
+				},
+				{
+					text: 'Cancel',
+					onPress: () => console.log('Cancel Pressed'),
+					style: 'cancel',
+				},
+			],
+			{
+				cancelable: true,
+				onDismiss: () =>
+					Alert.alert(
+						'This alert was dismissed by tapping outside of the alert dialog.'
+					),
+			}
+		);
 	useEffect(() => {
 		if (route.params?.cardID !== '') {
 			setCardID(route.params?.cardID);
@@ -37,7 +106,6 @@ const EditCardScreen = ({ navigation, route }) => {
 							tagsArray: doc.data().tags.tagsArray,
 						});
 						if (!doc.data().tags) {
-						
 							// if (doc.data().tags.tagsArray.size() > 0) {
 							// 	console.log("tagsArray")
 							// 	setTags({
@@ -80,7 +148,6 @@ const EditCardScreen = ({ navigation, route }) => {
 			<Button
 				title='Edit Question Card'
 				onPress={() => {
-					//After generating id add the contents from the field to firestore
 					cardID &&
 						db
 							.collection('questions')
@@ -110,6 +177,7 @@ const EditCardScreen = ({ navigation, route }) => {
 					});
 				}}
 			></Button>
+			<Button title='Remove Card' color={'red'} onPress={showAlert} />
 		</View>
 	);
 };
