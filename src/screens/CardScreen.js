@@ -1,17 +1,23 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { View, Text, Button, StyleSheet, RefreshControl } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import {
+	View,
+	Text,
+	Button,
+	StyleSheet,
+	TouchableOpacity,
+} from 'react-native';
 import CardSwiper from 'react-native-card-swipe';
 import { Card } from 'react-native-elements';
 import { db } from '../firebase/config';
-import firebase from 'firebase/compat/app';
 import 'firebase/compat/firestore';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import AddIcon from 'react-native-vector-icons/Ionicons';
 
 const CardScreen = ({ navigation, route }) => {
 	const [deck_ID, setDeck_ID] = useState('');
 	const [questions, setQuestions] = useState([]);
-	const [favorite, setFavorite] = useState(false);
 
+	// check if an id was passed from the other screens
 	useEffect(() => {
 		if (route.params?.id !== '') {
 			setDeck_ID(route.params?.id);
@@ -20,11 +26,12 @@ const CardScreen = ({ navigation, route }) => {
 		}
 	}, [route.params?.id]);
 
+	// fetch cards of the deck from firestore database
 	useEffect(() => {
 		const cardList = [];
 
 		if (deck_ID !== '') {
-			console.log('deck id', route.params?.id);
+			// console.log('deck id', route.params?.id);
 			db.collection('questions')
 				.where('deck_id', '==', deck_ID)
 				.get()
@@ -41,68 +48,109 @@ const CardScreen = ({ navigation, route }) => {
 		}
 	}, [deck_ID]);
 
-	const renderCard = (item,idx) => {
+	// renders cards
+	const renderCard = (item, idx) => {
 		return (
 			item && (
 				<View key={idx}>
 					<Card key={item._id}>
 						<Card.Title h3>{route.params?.title}</Card.Title>
-						<Text
-							style={{
-								marginBottom: 40,
-								height: 'auto',
-								width: '100%',
-								fontSize: 30,
-								justifyContent: 'center',
-								alignItems: 'center',
-								padding: 20,
+						<TouchableOpacity
+							onLongPress={() => {
+								navigation.navigate('Edit a Card', {
+									cardID: item._id,
+									deckID: route.params?.id,
+									title: route.params?.title,
+								});
 							}}
 						>
-							{item.title}
-						</Text>
-						<Text>{item.tags.tag && item.tags.tag} </Text>
-						{item.tags.tagsArray &&
-							item.tags.tagsArray.map((t, idx) => {
-								return <Text key={idx}># {t}</Text>;
-							})}
-						{item.favorite ? (
-							<Icon
-								name='heart'
-								size={40}
-								style={{ textAlign: 'right' }}
-								onPress={() => {
-									db.collection('questions')
-										.doc(item._id)
-										.update({
-											favorite: false,
-										})
-										.then(()=>navigation.navigate('Deck'))
+							<Text
+								style={{
+									marginBottom: 40,
+									height: 'auto',
+									width: '100%',
+									fontSize: 30,
+									justifyContent: 'center',
+									alignItems: 'center',
+									padding: 20,
 								}}
-							/>
-						) : (
-							<Icon
-								name='heart-o'
-								size={40}
-								style={{ textAlign: 'right' }}
-								onPress={() => {
-									db.collection('questions')
-										.doc(item._id)
-										.update({
-											favorite: true,
-										})
-										.then(()=>navigation.navigate('Deck'))
+							>
+								{item.title}
+							</Text>
+						</TouchableOpacity>
+
+						<View
+							key={idx}
+							style={{
+								flexDirection: 'row',
+								flexWrap: 'wrap',
+								alignItems: 'center',
+								justifyContent: 'space-between',
+							}}
+						>
+							<View
+								style={{
+									flexDirection: 'row',
+									flexWrap: 'wrap',
+									alignItems: 'center',
 								}}
-							/>
-						)}
+							>
+								<Text>{item.tags.tag && item.tags.tag} </Text>
+
+								{item.tags.tagsArray &&
+									item.tags.tagsArray.map((t, idx) => {
+										return <Text>#{t} </Text>;
+									})}
+							</View>
+							<View>
+								{item.favorite ? (
+									<Icon
+										name='heart'
+										size={40}
+										style={{
+											textAlign: 'right',
+											color: 'red',
+										}}
+										onPress={() => {
+											db.collection('questions')
+												.doc(item._id)
+												.update({
+													favorite: false,
+												})
+												.then(() =>
+													navigation.navigate('Deck')
+												);
+										}}
+									/>
+								) : (
+									<Icon
+										name='heart-o'
+										size={40}
+										style={{ textAlign: 'right' }}
+										onPress={() => {
+											db.collection('questions')
+												.doc(item._id)
+												.update({
+													favorite: true,
+												})
+												.then(() =>
+													navigation.navigate('Deck')
+												);
+										}}
+									/>
+								)}
+							</View>
+						</View>
 					</Card>
 				</View>
 			)
 		);
 	};
 
+	// render no more card when there are no other cards
 	const renderNoMoreCards = () => {
 		return (
-			<Card title='All done'>
+			<Card key="end" title='All done'>
 				<Card.Title
 					style={{
 						marginBottom: 10,
@@ -125,30 +173,32 @@ const CardScreen = ({ navigation, route }) => {
 
 	return (
 		<View style={styles.container}>
-			<View>
-				<Button
-					title='Add a Card'
+			<View style={{ marginBottom: 20 }}>
+				<TouchableOpacity
 					onPress={() =>
 						navigation.navigate('Create a Card', {
 							deckID: route.params?.id,
 							title: route.params?.title,
 						})
 					}
-				/>
+				>
+					<AddIcon
+						style={{ textAlign: 'center' }}
+						name='add-circle'
+						size={40}
+					/>
+					<Text style={{ textAlign: 'center' }}>Add a Card</Text>
+				</TouchableOpacity>
 			</View>
-			{/* <Text>Card from {route.params?.title} deck </Text> */}
 			<CardSwiper
 				data={questions}
 				renderCard={renderCard}
 				onSwipeLeft={(item) => {
 					console.log(item, 'onSwipeLeft');
-					navigation.navigate('Edit a Card', {
-						cardID: item._id,
-						deckID: route.params?.id,
-						title: route.params?.title,
-					});
 				}}
-				onSwipeRight={(item) => console.log(item, 'onSwipeRight')}
+				onSwipeRight={(item) => 
+					console.log(item, 'onSwipeRight')
+				}
 				renderNoMoreCards={renderNoMoreCards}
 			/>
 		</View>
@@ -162,6 +212,6 @@ const styles = StyleSheet.create({
 		flex: 1,
 		display: 'flex',
 		backgroundColor: '#fff',
-		paddingTop: 110,
+		paddingTop: 30,
 	},
 });

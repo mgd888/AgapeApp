@@ -8,6 +8,7 @@ import FavoriteScreen from '../screens/FavoriteScreen';
 import CreateDeckScreen from '../screens/create/CreateDeckScreen';
 import CreateCardScreen from '../screens/create/CreateCardScreen';
 import EditCardScreen from '../screens/edit/EditCardScreen';
+import EditDeckScreen from '../screens/edit/EditDeckScreen';
 import Reloader from '../components/Reloader';
 const Stack = createNativeStackNavigator();
 
@@ -32,6 +33,7 @@ const MainStackNav = () => {
 			<Stack.Screen name='Card' component={CardScreen} />
 			<Stack.Screen name='Create a Deck' component={CreateDeckScreen} />
 			<Stack.Screen name='Create a Card' component={CreateCardScreen} />
+			<Stack.Screen name='Edit a Deck' component={EditDeckScreen} />
 			<Stack.Screen name='Edit a Card' component={EditCardScreen} />
 		</Stack.Navigator>
 	);

@@ -3,6 +3,7 @@ import { View, Text, Button, StyleSheet, ScrollView } from 'react-native';
 import { Card } from 'react-native-elements';
 import { db } from '../firebase/config';
 
+// Maps all the cards in an alphabetical order
 const CardsScreen = () => {
 	const [cards, setCards] = useState([]);
 	useEffect(() => {

@@ -1,29 +1,26 @@
-import { NavigationContainer } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import {
 	View,
 	Text,
 	StyleSheet,
-	SafeAreaView,
-	FlatList,
 	StatusBar,
-	Pressable,
 	ScrollView,
-	Image,
+	TouchableOpacity,
 } from 'react-native';
-import { Card, ListItem, Icon, Button } from 'react-native-elements';
+import { Card, Button } from 'react-native-elements';
 import { db } from '../firebase/config';
-
 
 const HomeScreen = ({ navigation, route }) => {
 	const [decks, setDecks] = useState([]);
 
+	// checks if deck title passed from a screen
 	useEffect(() => {
 		if (route.params?.deckTitle) {
-			console.log(route.params?.deckTitle);
+			//console.log(route.params?.deckTitle);
 		}
 	}, [route.params?.deckTitle]);
 
+	// fetch decks from firestore database
 	useEffect(async () => {
 		const deckList = [];
 
@@ -36,42 +33,61 @@ const HomeScreen = ({ navigation, route }) => {
 				setDecks(deckList);
 			});
 
-		console.log('decks\n', decks);
+		//console.log('decks\n', decks);
 	}, [route.params?.deckTitle]);
 
 	return (
 		<ScrollView>
+			{/* Map out decks on screen */}
 			{decks &&
-				Object.keys(decks).map((d) => {
+				Object.keys(decks).map((d, idx) => {
 					return (
-						<Card key={decks[d]._id} >
-							<Card.Title h3>{decks[d].title}</Card.Title>
-							<Card.Image
-								source={{
-									uri: `https://source.unsplash.com/random/200x100/?${decks[d].title}`,
-								}}
-							/>
-							<Button
-								buttonStyle={{ backgroundColor: '#26ACE2', marginTop:20 }}
-								title='Select Deck'
-								onPress={() =>
-									navigation.navigate('Card', {
-										title: decks[d].title,
-										id: decks[d]._id,
+						<View key={idx}>
+							<TouchableOpacity
+								onLongPress={() =>
+									navigation.navigate('Edit a Deck', {
+										deckID: decks[d]._id,
 									})
 								}
 							>
-								<Text>Select Deck</Text>
-							</Button>
-						</Card>
+								<Card key={decks[d]._id}>
+									<Card.Title h3>{decks[d].title}</Card.Title>
+									<Card.Image
+										source={{
+											uri: `https://source.unsplash.com/random/800x600/?${decks[d].title}`,
+										}}
+									/>
+									<Button
+										buttonStyle={{
+											backgroundColor: '#26ACE2',
+											marginTop: 20,
+										}}
+										title='Select Deck'
+										onPress={() =>
+											navigation.navigate('Card', {
+												title: decks[d].title,
+												id: decks[d]._id,
+											})
+										}
+									>
+										<Text>Select Deck</Text>
+									</Button>
+								</Card>
+							</TouchableOpacity>
+						</View>
 					);
 				})}
-			<Card>
+			<Card containerStyle={{ marginBottom: 20 }}>
 				<Card.Title h3>Custom Deck</Card.Title>
+				<Card.Image
+					source={{
+						uri: `https://source.unsplash.com/random/800x600/?custom`,
+					}}
+				/>
 				<Button
 					title='Create a Deck'
 					onPress={() => navigation.navigate('Create a Deck')}
-					buttonStyle={{ backgroundColor: '#26ACE2' }}
+					buttonStyle={{ backgroundColor: '#26ACE2', marginTop: 20 }}
 				></Button>
 			</Card>
 		</ScrollView>

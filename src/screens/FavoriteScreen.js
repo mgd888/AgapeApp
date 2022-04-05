@@ -3,6 +3,7 @@ import { View, Text, Button, StyleSheet, ScrollView } from 'react-native';
 import { Card } from 'react-native-elements';
 import { db } from '../firebase/config';
 
+// Renders and maps the cards that became the favorite
 const FavoriteScreen = () => {
 	const [faveCards, setFaveCards] = useState([]);
 	useEffect(() => {

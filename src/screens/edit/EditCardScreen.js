@@ -66,7 +66,7 @@ const EditCardScreen = ({ navigation, route }) => {
 									return false;
 								});
 
-						Alert.alert('Successfully deleted card.')
+						Alert.alert('Successfully deleted card.');
 						// navigate to card screen after
 						navigation.navigate('Card', {
 							id: route.params?.deckID,
@@ -105,25 +105,10 @@ const EditCardScreen = ({ navigation, route }) => {
 							tag: doc.data().tags.tag,
 							tagsArray: doc.data().tags.tagsArray,
 						});
-						if (!doc.data().tags) {
-							// if (doc.data().tags.tagsArray.size() > 0) {
-							// 	console.log("tagsArray")
-							// 	setTags({
-							// 		tag: '',
-							// 		tagsArray: doc.data().tags.tagsArray,
-							// 	});
-							// } else {
-							// 	setTags({
-							// 		tag: doc.data().tags.tag,
-							// 		tagsArray: [],
-							// 	});
-							// }
-						}
+						
 					});
 				});
-			// 	.catch((error) => {
-			// 		console.log('Error getting documents: ', error);
-			// 	});
+			
 		}
 	}, [route.params?.cardID]);
 	return (
