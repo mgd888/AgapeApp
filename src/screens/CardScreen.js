@@ -1,11 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-	View,
-	Text,
-	Button,
-	StyleSheet,
-	TouchableOpacity,
-} from 'react-native';
+import { View, Text, Button, StyleSheet, TouchableOpacity } from 'react-native';
 import CardSwiper from 'react-native-card-swipe';
 import { Card } from 'react-native-elements';
 import { db } from '../firebase/config';
@@ -44,7 +38,7 @@ const CardScreen = ({ navigation, route }) => {
 					setQuestions(cardList);
 				});
 		} else {
-			console.log('No deck id');
+			// console.log('No deck id');
 		}
 	}, [deck_ID]);
 
@@ -53,7 +47,7 @@ const CardScreen = ({ navigation, route }) => {
 		return (
 			item && (
 				<View key={idx}>
-					<Card key={item._id}>
+					<Card>
 						<Card.Title h3>{route.params?.title}</Card.Title>
 						<TouchableOpacity
 							onLongPress={() => {
@@ -95,11 +89,13 @@ const CardScreen = ({ navigation, route }) => {
 									alignItems: 'center',
 								}}
 							>
-								<Text>{item.tags.tag && item.tags.tag} </Text>
+								<Text>
+									{item.tags.tag && `#${item.tags.tag}`}{' '}
+								</Text>
 
 								{item.tags.tagsArray &&
 									item.tags.tagsArray.map((t, idx) => {
-										return <Text>#{t} </Text>;
+										return <Text key={idx}>#{t} </Text>;
 									})}
 							</View>
 							<View>
@@ -150,24 +146,26 @@ const CardScreen = ({ navigation, route }) => {
 	// render no more card when there are no other cards
 	const renderNoMoreCards = () => {
 		return (
-			<Card key="end" title='All done'>
-				<Card.Title
-					style={{
-						marginBottom: 10,
-						height: 120,
-						width: '100%',
-						fontSize: 30,
-						justifyContent: 'center',
-						alignItems: 'center',
-					}}
-				>
-					There is no more content
-				</Card.Title>
-				<Button
-					title='Get More'
-					onPress={() => navigation.navigate('Deck')}
-				/>
-			</Card>
+			<View key='end'>
+				<Card title='All done'>
+					<Card.Title
+						style={{
+							marginBottom: 10,
+							height: 120,
+							width: '100%',
+							fontSize: 30,
+							justifyContent: 'center',
+							alignItems: 'center',
+						}}
+					>
+						There is no more content
+					</Card.Title>
+					<Button
+						title='Get More'
+						onPress={() => navigation.navigate('Deck')}
+					/>
+				</Card>
+			</View>
 		);
 	};
 
@@ -193,12 +191,12 @@ const CardScreen = ({ navigation, route }) => {
 			<CardSwiper
 				data={questions}
 				renderCard={renderCard}
-				onSwipeLeft={(item) => {
-					console.log(item, 'onSwipeLeft');
-				}}
-				onSwipeRight={(item) => 
-					console.log(item, 'onSwipeRight')
-				}
+				// onSwipeLeft={(item) => {
+				// 	console.log(item, 'onSwipeLeft');
+				// }}
+				// onSwipeRight={(item) =>
+				// 	console.log(item, 'onSwipeRight')
+				// }
 				renderNoMoreCards={renderNoMoreCards}
 			/>
 		</View>

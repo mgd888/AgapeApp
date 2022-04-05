@@ -30,7 +30,13 @@ const MainStackNav = () => {
 					headerRight: () => <Reloader />,
 				}}
 			/>
-			<Stack.Screen name='Card' component={CardScreen} />
+			<Stack.Screen
+				name='Card'
+				component={CardScreen}
+				options={{
+					headerRight: () => <Reloader />,
+				}}
+			/>
 			<Stack.Screen name='Create a Deck' component={CreateDeckScreen} />
 			<Stack.Screen name='Create a Card' component={CreateCardScreen} />
 			<Stack.Screen name='Edit a Deck' component={EditDeckScreen} />

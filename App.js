@@ -5,6 +5,7 @@ import Tabs from './src/navigation/Tabs';
 LogBox.ignoreLogs(['Setting a timer']);
 LogBox.ignoreLogs(['componentWillReceiveProps']);
 LogBox.ignoreLogs(['Animated: `useNativeDriver`']);
+LogBox.ignoreLogs(['Warning: ...']);
 
 export default function App() {
 	return (
