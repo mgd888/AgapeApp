@@ -77,6 +77,8 @@ const HomeScreen = ({ navigation, route }) => {
 						</View>
 					);
 				})}
+
+			{/* A Card that links to making a custom deck */}
 			<Card containerStyle={{ marginBottom: 20 }}>
 				<Card.Title h3>Custom Deck</Card.Title>
 				<Card.Image

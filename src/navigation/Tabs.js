@@ -1,7 +1,8 @@
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
-import { Ionicons, Entypo } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { MainStackNav, CardsStackNav, FavStackNav } from './StackNavigator';
 
+// Initialize a constant Tab for the material design themed bottom tab navigation bar
 const Tab = createMaterialBottomTabNavigator();
 
 function Tabs() {

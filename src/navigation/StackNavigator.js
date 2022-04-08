@@ -1,5 +1,4 @@
 import React from 'react';
-import { Button } from 'react-native-elements';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from '../screens/HomeScreen';
 import CardScreen from '../screens/CardScreen';
