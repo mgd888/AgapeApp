@@ -2,7 +2,7 @@
 
 # Agape Example Usage
 
-![](https://i.imgur.com/ryrkGvU.gif)
+![](https://i.imgur.com/ryrkGvUs.gif)
 
 # Configuration instructions
 
