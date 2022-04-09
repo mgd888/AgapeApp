@@ -112,12 +112,13 @@ To learn more about React Native, take a look at the following resources:
 
 You can check out the [React Native GitHub repository](https://github.com/facebook/react-native) - your feedback and contributions are welcome!
 
-# Copyright information
+## Copyright information
+Agape is created and maintained by MacchiatoDev.
 
-# Contact information
+MacchiatoDev is open to suggestions, feel free to message MacchiatoDev on Discord or open an issue.
 
-# Bug list
 
-# Troubleshooting tips
+## Bug list
+- When swipping cards the user must swipe just below the question title.
+- Unique key. 
 
-# Credits and acknowledgments
