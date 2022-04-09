@@ -127,6 +127,8 @@ You can check out the [React Native GitHub repository](https://github.com/facebo
 
 Agape is created and maintained by MacchiatoDev.
 
+Pre-made questions are compiled by Ruby Peterson ([site link](https://datingatadistance.com/long-distance-relationship-questions/))
+
 MacchiatoDev is open to suggestions, feel free to message MacchiatoDev on Discord or open an issue.
 
 ## Bug list
