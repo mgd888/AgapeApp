@@ -19,10 +19,12 @@ In this application, one is able to view and edit 13 pre-made decks pertaining t
 ![](https://i.imgur.com/bBXiIKJ.jpg)
 
 ## Design Patterns
-### Controlled Component Design Pattern
-Controlled Components are used all throughout the create and edit screens. It is a pattern in React Native that is commonly used to handle form state. This design pattern works by utilizing states via props. State changes are performed through callbacks; for instance, via an onChangeText or updateState. Values can be modified by having it passed to controlled components as props. 
 
-The code snippets below indicates the usage of the controlled component design pattern:
+### Controlled Component Design Pattern
+
+Controlled Components are used all throughout the create and edit screens. It is a pattern in React Native that is commonly used to handle form state. This design pattern works by utilizing states via props. State changes are performed through callbacks; for instance, via an onChangeText or updateState. Values can be modified by having it passed to controlled components as props.
+
+The code snippet below indicates the usage of the controlled component design pattern:
 ![](https://i.imgur.com/coPSNU6.jpg)
 
 As seen above, the values of the following input fields are modified through the use of the controlled component design pattern. It uses the callbacks such as onChangeText which a value prop is used to update a useState.
@@ -122,13 +124,13 @@ To learn more about React Native, take a look at the following resources:
 You can check out the [React Native GitHub repository](https://github.com/facebook/react-native) - your feedback and contributions are welcome!
 
 ## Copyright information
+
 Agape is created and maintained by MacchiatoDev.
 
 MacchiatoDev is open to suggestions, feel free to message MacchiatoDev on Discord or open an issue.
 
-
 ## Bug list
-- When swipping cards the user must swipe just below the question title.
-- Unique key warning appear in the Home and Cards screen still appear even when they are already unique. 
-- On Android, when navigating screens through the tabs, it would sometimes show a blank screen. 
 
+-   When swipping cards the user must swipe just below the question title.
+-   Unique key warning appear in the Home and Cards screen still appear even when they are already unique.
+-   On Android, when navigating screens through the tabs, it would sometimes show a blank screen.
