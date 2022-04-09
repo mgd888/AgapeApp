@@ -2,7 +2,7 @@
 
 ## _Cards that give recognition of the fact that all life is interrelated_
 
-Agape is a cross-platform icebreaker mobile application. It has the ability to view unique decks of endless questions which is the perfect app to pull out during icebreaker sessions, after-dinner games or any instances where you want to have a deeper or more intensified conversation with family, friends, or with a significant other near or far.
+Agape is a cross-platform icebreaker mobile application. It has the ability to view unique decks of endless questions. Agape is the perfect app to pull out during icebreaker sessions, after-dinner games or any instances where you want to have a deeper or more intensified conversation with family, friends, or with a significant other near or far.
 
 ## Overview
 
