@@ -129,5 +129,6 @@ MacchiatoDev is open to suggestions, feel free to message MacchiatoDev on Discor
 
 ## Bug list
 - When swipping cards the user must swipe just below the question title.
-- Unique key. 
+- Unique key warning appear in the Home and Cards screen still appear even when they are already unique. 
+- On Android, when navigating screens through the tabs, it would sometimes show a blank screen. 
 
