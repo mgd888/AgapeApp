@@ -18,6 +18,15 @@ In this application, one is able to view and edit 13 pre-made decks pertaining t
 
 ![](https://i.imgur.com/bBXiIKJ.jpg)
 
+## Design Patterns
+### Controlled Component Design Pattern
+Controlled Components are used all throughout the create and edit screens. It is a pattern in React Native that is commonly used to handle form state. This design pattern works by utilizing states via props. State changes are performed through callbacks; for instance, via an onChangeText or updateState. Values can be modified by having it passed to controlled components as props. 
+
+The code snippets below indicates the usage of the controlled component design pattern:
+![](https://i.imgur.com/coPSNU6.jpg)
+
+As seen above, the values of the following input fields are modified through the use of the controlled component design pattern. It uses the callbacks such as onChangeText which a value prop is used to update a useState.
+
 ## Features
 
 -   View pre-made decks filled with question cards
