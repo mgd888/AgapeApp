@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, Button, StyleSheet, Alert } from 'react-native';
 import TagInput from 'react-native-tags-input';
 import { Input } from 'react-native-elements';
-import { TabRouter } from '@react-navigation/native';
 import { db } from '../../firebase/config';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/firestore';
@@ -105,10 +104,8 @@ const EditCardScreen = ({ navigation, route }) => {
 							tag: doc.data().tags.tag,
 							tagsArray: doc.data().tags.tagsArray,
 						});
-						
 					});
 				});
-			
 		}
 	}, [route.params?.cardID]);
 	return (
@@ -148,18 +145,7 @@ const EditCardScreen = ({ navigation, route }) => {
 								console.error('Error adding card: ', error);
 							});
 
-					// add card id to deck's questions array
-					db.collection('decks')
-						.doc(route.params?.deckID)
-						.update({
-							questions:
-								firebase.firestore.FieldValue.arrayUnion(id),
-						});
-
-					navigation.navigate('Card', {
-						id: route.params?.deckID,
-						title: route.params?.title,
-					});
+					navigation.navigate('Deck');
 				}}
 			></Button>
 			<Button title='Remove Card' color={'red'} onPress={showAlert} />

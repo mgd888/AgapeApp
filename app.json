@@ -17,13 +17,15 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.mgd888.AgapeApp"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/agape.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.mgd888.AgapeApp"
     },
     "web": {
       "favicon": "./assets/favicon.png"

@@ -14,7 +14,9 @@ const CardScreen = ({ navigation, route }) => {
 	// check if an id was passed from the other screens
 	useEffect(() => {
 		if (route.params?.id !== '') {
+			// console.log('id', route.params?.id);
 			setDeck_ID(route.params?.id);
+			// console.log('questions', questions);
 		} else {
 			console.log('empty');
 		}
@@ -38,7 +40,7 @@ const CardScreen = ({ navigation, route }) => {
 					setQuestions(cardList);
 				});
 		} else {
-			// console.log('No deck id');
+			console.log('No deck id');
 		}
 	}, [deck_ID]);
 
@@ -46,99 +48,95 @@ const CardScreen = ({ navigation, route }) => {
 	const renderCard = (item, idx) => {
 		return (
 			item && (
-				<View key={idx}>
-					<Card>
-						<Card.Title h3>{route.params?.title}</Card.Title>
-						<TouchableOpacity
-							onLongPress={() => {
-								navigation.navigate('Edit a Card', {
-									cardID: item._id,
-									deckID: route.params?.id,
-									title: route.params?.title,
-								});
+				<Card key={item._id}>
+					<Card.Title h3>{route.params?.title}</Card.Title>
+					<TouchableOpacity
+						onLongPress={() => {
+							navigation.navigate('Edit a Card', {
+								cardID: item._id,
+								deckID: route.params?.id,
+								title: route.params?.title,
+							});
+						}}
+					>
+						<Text
+							style={{
+								marginBottom: 40,
+								height: 'auto',
+								width: '100%',
+								fontSize: 30,
+								justifyContent: 'center',
+								alignItems: 'center',
+								padding: 20,
 							}}
 						>
-							<Text
-								style={{
-									marginBottom: 40,
-									height: 'auto',
-									width: '100%',
-									fontSize: 30,
-									justifyContent: 'center',
-									alignItems: 'center',
-									padding: 20,
-								}}
-							>
-								{item.title}
-							</Text>
-						</TouchableOpacity>
+							{item.title}
+						</Text>
+					</TouchableOpacity>
 
+					<View
+						key={idx}
+						style={{
+							flexDirection: 'row',
+							flexWrap: 'wrap',
+							alignItems: 'center',
+							justifyContent: 'space-between',
+						}}
+					>
 						<View
-							key={idx}
 							style={{
 								flexDirection: 'row',
 								flexWrap: 'wrap',
 								alignItems: 'center',
-								justifyContent: 'space-between',
 							}}
 						>
-							<View
-								style={{
-									flexDirection: 'row',
-									flexWrap: 'wrap',
-									alignItems: 'center',
-								}}
-							>
-								<Text>
-									{item.tags.tag && `#${item.tags.tag}`}{' '}
-								</Text>
+							<Text>{item.tags.tag && `#${item.tags.tag}`} </Text>
 
-								{item.tags.tagsArray &&
-									item.tags.tagsArray.map((t, idx) => {
-										return <Text key={idx}>#{t} </Text>;
-									})}
-							</View>
-							<View>
-								{item.favorite ? (
-									<Icon
-										name='heart'
-										size={40}
-										style={{
-											textAlign: 'right',
-											color: 'red',
-										}}
-										onPress={() => {
-											db.collection('questions')
-												.doc(item._id)
-												.update({
-													favorite: false,
-												})
-												.then(() =>
-													navigation.navigate('Deck')
-												);
-										}}
-									/>
-								) : (
-									<Icon
-										name='heart-o'
-										size={40}
-										style={{ textAlign: 'right' }}
-										onPress={() => {
-											db.collection('questions')
-												.doc(item._id)
-												.update({
-													favorite: true,
-												})
-												.then(() =>
-													navigation.navigate('Deck')
-												);
-										}}
-									/>
-								)}
-							</View>
+							{item.tags.tagsArray &&
+								item.tags.tagsArray.map((t, idx) => {
+									return <Text key={idx}>#{t} </Text>;
+								})}
 						</View>
-					</Card>
-				</View>
+						<View>
+							{item.favorite ? (
+								<Icon
+									name='heart'
+									size={40}
+									style={{
+										textAlign: 'right',
+										color: 'red',
+									}}
+									onPress={() => {
+										db.collection('questions')
+											.doc(item._id)
+											.update({
+												favorite: false,
+											})
+											.then(() =>
+												navigation.navigate('Deck')
+											);
+									}}
+								/>
+							) : (
+								<Icon
+									name='heart-o'
+									size={40}
+									style={{ textAlign: 'right' }}
+									onPress={() => {
+										db.collection('questions')
+											.doc(item._id)
+											.update({
+												favorite: true,
+											})
+											.then(() =>
+												navigation.navigate('Deck')
+											);
+									}}
+								/>
+							)}
+						</View>
+					</View>
+				</Card>
 			)
 		);
 	};
